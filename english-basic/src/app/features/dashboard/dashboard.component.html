@@ -1,0 +1,18 @@
+<main class="dashboard">
+  <h1>Hola, {{ userName() }}</h1>
+  <p class="dashboard-subtitle">Bienvenido de vuelta a English Basic.</p>
+
+  <section class="dashboard-card">
+    <h2>Suscripción</h2>
+    <p class="dashboard-status">Plan gratuito (FREE)</p>
+    <p class="dashboard-hint">La gestión de suscripciones estará disponible próximamente.</p>
+  </section>
+
+  <nav class="dashboard-links">
+    <a routerLink="/curso">Ir al curso</a>
+    <a routerLink="/perfil">Mi perfil</a>
+    <a routerLink="/suscripcion">Ver planes</a>
+  </nav>
+
+  <button class="dashboard-logout" type="button" (click)="onLogout()">Cerrar sesión</button>
+</main>
