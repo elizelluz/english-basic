@@ -182,6 +182,20 @@
   flex: 1 1 auto;
 }
 
+.lesson-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: 0 0 auto;
+  border-radius: var(--radius-full);
+  background: var(--color-success);
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
 .lesson-title {
   font-weight: 600;
 }

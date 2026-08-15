@@ -43,6 +43,7 @@ export class CourseComponent {
   readonly empty = signal(false);
   readonly premium = signal(false);
   readonly expanded = signal<Set<number>>(new Set());
+  readonly completedLessons = signal<Set<number>>(new Set());
 
   constructor() {
     void this.load();
@@ -121,5 +122,26 @@ export class CourseComponent {
       this.expanded.set(new Set([withLessons[0].id]));
     }
     this.loading.set(false);
+
+    void this.loadProgress(lessons.map((l) => l.id));
+  }
+
+  private async loadProgress(lessonIds: number[]): Promise<void> {
+    const user = this.authService.user();
+    if (!user || lessonIds.length === 0) {
+      return;
+    }
+    const { data } = await this.supabase.client
+      .from('lesson_progress')
+      .select('lesson_id')
+      .eq('user_id', user.id)
+      .eq('completed', true)
+      .in('lesson_id', lessonIds);
+    const completed = (data ?? [])
+      .filter((row) => row.lesson_id !== null && row.lesson_id !== undefined)
+      .map((row) => row.lesson_id as number);
+    if (completed.length > 0) {
+      this.completedLessons.set(new Set(completed));
+    }
   }
 }

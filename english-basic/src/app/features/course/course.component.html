@@ -45,6 +45,9 @@
                     <li>
                       <a routerLink="/curso/{{ lesson.id }}" class="lesson-item">
                         <span class="lesson-number" aria-hidden="true">{{ lesson.order }}</span>
+                        @if (completedLessons().has(lesson.id)) {
+                          <span class="lesson-check" aria-hidden="true">✓</span>
+                        }
                         <span class="lesson-info">
                           <span class="lesson-title">{{ lesson.title }}</span>
                           @if (lesson.description) {
