@@ -2,47 +2,11 @@
 -- English Basic — Schema Fase 2 (Supabase / PostgreSQL)
 -- Aplicar en: Supabase Dashboard → SQL Editor → New query → Run
 -- Diseño aprobado en PLAN.md (secciones 4 y 5).
+-- Orden: tablas → índices → funciones → trigger → RLS → seed
 -- ============================================================================
 
 -- ----------------------------------------------------------------------------
--- 1. Helper functions (seguridad y roles)
--- ----------------------------------------------------------------------------
-
--- True si el usuario actual tiene una suscripción activa.
-create or replace function public.is_premium()
-returns boolean
-language sql
-stable
-security definer
-set search_path = public
-as $$
-  select exists (
-    select 1
-    from public.subscriptions s
-    where s.user_id = auth.uid()
-      and s.status = 'active'
-      and (s.current_period_end is null or s.current_period_end > now())
-  );
-$$;
-
--- True si el usuario actual es administrador.
-create or replace function public.is_admin()
-returns boolean
-language sql
-stable
-security definer
-set search_path = public
-as $$
-  select exists (
-    select 1
-    from public.profiles p
-    where p.id = auth.uid()
-      and p.role = 'admin'
-  );
-$$;
-
--- ----------------------------------------------------------------------------
--- 2. Tablas
+-- 1. Tablas
 -- ----------------------------------------------------------------------------
 
 -- Perfil del usuario (relacionado con auth.users por id).
@@ -172,7 +136,7 @@ create table public.events (
 );
 
 -- ----------------------------------------------------------------------------
--- 3. Índices
+-- 2. Índices
 -- ----------------------------------------------------------------------------
 
 create index subscriptions_user_status_idx on public.subscriptions (user_id, status);
@@ -181,6 +145,43 @@ create index lesson_progress_user_idx        on public.lesson_progress (user_id)
 create index events_user_created_idx         on public.events (user_id, created_at);
 create index questions_quiz_order_idx        on public.questions (quiz_id, "order");
 create index answers_question_order_idx      on public.answers (question_id, "order");
+
+-- ----------------------------------------------------------------------------
+-- 3. Helper functions (seguridad y roles) — después de las tablas
+-- ----------------------------------------------------------------------------
+
+-- True si el usuario actual tiene una suscripción activa.
+create or replace function public.is_premium()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.subscriptions s
+    where s.user_id = auth.uid()
+      and s.status = 'active'
+      and (s.current_period_end is null or s.current_period_end > now())
+  );
+$$;
+
+-- True si el usuario actual es administrador.
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.profiles p
+    where p.id = auth.uid()
+      and p.role = 'admin'
+  );
+$$;
 
 -- ----------------------------------------------------------------------------
 -- 4. Trigger: crear profile automáticamente al registrarse
@@ -207,7 +208,6 @@ create trigger on_auth_user_created
 -- ----------------------------------------------------------------------------
 -- 5. Row Level Security
 -- ----------------------------------------------------------------------------
-
 alter table public.profiles        enable row level security;
 alter table public.plans           enable row level security;
 alter table public.subscriptions   enable row level security;
