@@ -1,0 +1,255 @@
+<header class="site-header">
+  <div class="container header-inner">
+    <a routerLink="/" class="logo">
+      <span class="logo-mark" aria-hidden="true">EB</span>
+      <span>English Basic</span>
+    </a>
+    <nav class="site-nav" aria-label="Navegación principal">
+      <a routerLink="/pricing">Precios</a>
+      <a href="#programa">Curso</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="header-cta">
+      @if (isAuthenticated()) {
+        <a routerLink="/dashboard" class="btn btn-primary">Ir al dashboard</a>
+      } @else {
+        <a routerLink="/login" class="btn btn-ghost login-link">Iniciar sesión</a>
+        <a routerLink="/registro" class="btn btn-primary">Comenzar gratis</a>
+      }
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container">
+      <p class="hero-eyebrow">Aprende inglés desde cero</p>
+      <h1 class="hero-title">
+        Aprende las bases del inglés y empieza a comunicarte en situaciones cotidianas
+        <span class="accent">en 30 días.</span>
+      </h1>
+      <p class="hero-subtitle">
+        Lecciones cortas, ejercicios y práctica diaria. Un método paso a paso para quien
+        empieza desde cero y tiene poco tiempo.
+      </p>
+      <div class="hero-actions">
+        <a routerLink="/pricing" class="btn btn-outline btn-lg">Ver planes</a>
+        @if (isAuthenticated()) {
+          <a routerLink="/dashboard" class="btn btn-primary btn-lg">Ir al dashboard</a>
+        } @else {
+          <a routerLink="/registro" class="btn btn-primary btn-lg">Comenzar gratis</a>
+        }
+      </div>
+      <ul class="hero-points">
+        <li><span class="tick" aria-hidden="true">✓</span>Sin tarjeta para empezar</li>
+        <li><span class="tick" aria-hidden="true">✓</span>15 minutos al día</li>
+        <li><span class="tick" aria-hidden="true">✓</span>Disponible en tu celular</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section problem" id="problema">
+    <div class="container">
+      <div class="section-head">
+        <p class="section-eyebrow">El problema</p>
+        <h2 class="section-title">¿Por qué casi nadie termina un curso de inglés?</h2>
+      </div>
+      <div class="problem-grid">
+        <article class="problem-card is-negative">
+          <h3>Empiezas con ganas y te quedas a medias</h3>
+          <p>
+            Las apps de idiomas te dan lecciones sueltas, sin un orden claro. Sin estructura
+            ni rutina, la motivación se apaga a las dos semanas.
+          </p>
+        </article>
+        <article class="problem-card is-positive">
+          <h3>Un método estructurado, paso a paso</h3>
+          <p>
+            English Basic te guía semana a semana con lecciones cortas y práctica diaria.
+            Aprendes en orden, ves tu progreso y en 30 días ya te comunicas en situaciones
+            cotidianas.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt benefits" id="beneficios">
+    <div class="container">
+      <div class="section-head is-center">
+        <p class="section-eyebrow">Beneficios</p>
+        <h2 class="section-title">Todo lo que necesitas para empezar a hablar</h2>
+        <p class="section-sub">Un curso diseñado para que avances de verdad, sin frustraciones.</p>
+      </div>
+      <div class="benefits-grid">
+        @for (benefit of benefits; track benefit.title) {
+          <article class="benefit-card">
+            <span class="benefit-icon" aria-hidden="true">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path [attr.d]="benefit.icon"></path>
+              </svg>
+            </span>
+            <h3 class="benefit-title">{{ benefit.title }}</h3>
+            <p class="benefit-desc">{{ benefit.description }}</p>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section steps" id="como-funciona">
+    <div class="container">
+      <div class="section-head is-center">
+        <p class="section-eyebrow">Cómo funciona</p>
+        <h2 class="section-title">Empieza hoy, habla en 30 días</h2>
+      </div>
+      <div class="steps-grid">
+        @for (step of steps; track step.number) {
+          <article class="step">
+            <span class="step-num" aria-hidden="true">{{ step.number }}</span>
+            <h3 class="step-title">{{ step.title }}</h3>
+            <p class="step-desc">{{ step.description }}</p>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt program" id="programa">
+    <div class="container">
+      <div class="section-head">
+        <p class="section-eyebrow">El programa</p>
+        <h2 class="section-title">4 semanas, 4 módulos para comunicarte</h2>
+        <p class="section-sub">De los saludos a las conversaciones básicas, todo en orden.</p>
+      </div>
+      <div class="program-grid">
+        @for (week of weeks; track week.title) {
+          <article class="week-card">
+            <span class="week-tag">{{ week.tag }}</span>
+            <h3 class="week-title">{{ week.title }}</h3>
+            <ul class="week-topics">
+              @for (topic of week.topics; track topic) {
+                <li class="week-topic">{{ topic }}</li>
+              }
+            </ul>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section testimonials" id="testimonios">
+    <div class="container">
+      <div class="section-head is-center">
+        <p class="section-eyebrow">Testimonios</p>
+        <h2 class="section-title">Resultados reales, personas como tú</h2>
+        <p class="section-sub">
+          Algunos ejemplos de lo que vas a lograr. Estamos reuniendo testimonios de los
+          primeros estudiantes.
+        </p>
+      </div>
+      <div class="testimonials-grid">
+        @for (testimonial of testimonials; track testimonial.name) {
+          <article class="testimonial">
+            <span class="testimonial-badge">Próximamente</span>
+            <p class="testimonial-quote">{{ testimonial.quote }}</p>
+            <div class="testimonial-author">
+              <span class="testimonial-avatar" aria-hidden="true">{{ testimonial.initials }}</span>
+              <div>
+                <p class="testimonial-name">{{ testimonial.name }}</p>
+                <p class="testimonial-role">{{ testimonial.role }}</p>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt pricing-teaser" id="precios">
+    <div class="container">
+      <div class="section-head is-center">
+        <p class="section-eyebrow">Precios</p>
+        <h2 class="section-title">Empieza gratis. Mejora cuando quieras.</h2>
+      </div>
+      <div class="teaser-grid">
+        <article class="teaser-card">
+          <h3 class="teaser-name">Free</h3>
+          <p class="teaser-price">$0<span>/mes</span></p>
+          <p class="teaser-desc">Lo esencial para empezar a aprender hoy mismo.</p>
+          <ul class="teaser-list">
+            <li><span class="tick" aria-hidden="true">✓</span>3 lecciones</li>
+            <li><span class="tick" aria-hidden="true">✓</span>Vocabulario básico</li>
+            <li><span class="tick" aria-hidden="true">✓</span>Quiz inicial</li>
+          </ul>
+        </article>
+        <article class="teaser-card is-featured">
+          <h3 class="teaser-name">Premium</h3>
+          <p class="teaser-price">$9.99<span>/mes</span></p>
+          <p class="teaser-desc">Todo el curso completo para avanzar sin límites.</p>
+          <ul class="teaser-list">
+            <li><span class="tick" aria-hidden="true">✓</span>Curso completo (4 módulos)</li>
+            <li><span class="tick" aria-hidden="true">✓</span>Ejercicios y quizzes</li>
+            <li><span class="tick" aria-hidden="true">✓</span>Audios de pronunciación</li>
+            <li><span class="tick" aria-hidden="true">✓</span>Seguimiento de progreso</li>
+          </ul>
+        </article>
+      </div>
+      <p class="teaser-cta-wrap">
+        <a routerLink="/pricing" class="teaser-cta-link">Ver precios completos →</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section faq" id="faq">
+    <div class="container">
+      <div class="section-head is-center">
+        <p class="section-eyebrow">FAQ</p>
+        <h2 class="section-title">Preguntas frecuentes</h2>
+      </div>
+      <div class="faq-list">
+        @for (item of faqs; track item.question) {
+          <details class="faq-item">
+            <summary class="faq-question">{{ item.question }}</summary>
+            <p class="faq-answer">{{ item.answer }}</p>
+          </details>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section cta-final">
+    <div class="container">
+      <div class="cta-banner">
+        <h2 class="cta-title">Empieza hoy gratis</h2>
+        <p class="cta-sub">
+          Crea tu cuenta y da tu primera lección en menos de un minuto. Sin tarjeta de crédito.
+        </p>
+        @if (isAuthenticated()) {
+          <a routerLink="/dashboard" class="btn btn-lg">Ir al dashboard</a>
+        } @else {
+          <a routerLink="/registro" class="btn btn-lg">Comenzar gratis</a>
+        }
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p class="footer-brand">English Basic</p>
+    <nav class="footer-nav" aria-label="Enlaces legales">
+      <a href="#">Términos</a>
+      <a href="#">Privacidad</a>
+      <a href="#">Contacto</a>
+    </nav>
+    <p class="footer-copy">© 2026 English Basic. Todos los derechos reservados.</p>
+  </div>
+</footer>

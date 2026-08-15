@@ -1,0 +1,69 @@
+<header class="pricing-header">
+  <div class="container header-inner">
+    <a routerLink="/" class="back-link">← Volver</a>
+    <div class="header-cta">
+      @if (isAuthenticated()) {
+        <a routerLink="/dashboard" class="btn btn-primary">Ir al dashboard</a>
+      } @else {
+        <a routerLink="/login" class="btn btn-ghost login-link">Iniciar sesión</a>
+        <a routerLink="/registro" class="btn btn-primary">Comenzar gratis</a>
+      }
+    </div>
+  </div>
+</header>
+
+<main class="pricing-main">
+  <div class="container">
+    <section class="pricing-heading">
+      <p class="section-eyebrow">Planes</p>
+      <h1>Precios simples. Elige cómo aprender.</h1>
+      <p>Empieza gratis y pasa a Premium cuando estés listo para todo el curso.</p>
+    </section>
+
+    <section class="plans" aria-label="Planes disponibles">
+      <article class="plan plan-free">
+        <h2 class="plan-name">Free</h2>
+        <p class="plan-price">$0<span>/mes</span></p>
+        <p class="plan-desc">Empieza a aprender sin costo y sin tarjeta.</p>
+        <ul class="plan-features">
+          @for (feature of features; track feature.label) {
+            <li class="plan-feature">
+              @if (feature.free) {
+                <span class="mark mark-on" aria-hidden="true">✓</span>
+              } @else {
+                <span class="mark mark-off" aria-hidden="true">—</span>
+              }
+              {{ feature.label }}
+            </li>
+          }
+        </ul>
+        <a routerLink="/registro" class="btn btn-outline btn-block">Comenzar gratis</a>
+      </article>
+
+      <article class="plan plan-premium">
+        <p class="plan-badge">Más popular</p>
+        <h2 class="plan-name">Premium</h2>
+        <p class="plan-price">$9.99<span>/mes</span></p>
+        <p class="plan-desc">Todo el curso completo para avanzar sin límites.</p>
+        <ul class="plan-features">
+          @for (feature of features; track feature.label) {
+            <li class="plan-feature">
+              @if (feature.premium) {
+                <span class="mark mark-on" aria-hidden="true">✓</span>
+              } @else {
+                <span class="mark mark-off" aria-hidden="true">—</span>
+              }
+              {{ feature.label }}
+            </li>
+          }
+        </ul>
+        <!-- TODO F7: link a checkout Hotmart -->
+        <a routerLink="/registro" class="btn btn-primary btn-block">Comenzar Premium</a>
+      </article>
+    </section>
+
+    <p class="pricing-note">
+      Pagos seguros procesados por Hotmart · Puedes cancelar cuando quieras
+    </p>
+  </div>
+</main>
