@@ -16,7 +16,7 @@
 | F4 | Landing + pricing de conversión | ✅ Completada |
 | F5 | Contenido del curso (20 lecciones, quizzes, audios) | ✅ Completada |
 | F6 | Progreso + dashboard del alumno | ✅ Completada |
-| F7 | Hotmart + suscripciones + PDF + email | 🔨 En curso (compra probada end-to-end; falta cancelación/reembolso + commit) |
+| F7 | Hotmart + suscripciones + PDF + email | ✅ Completa (compra, cancelación y reembolso probados end-to-end; PWA pulida) |
 
 **Pendiente de usuario**: ✅ cuenta Hotmart + producto de suscripción creado (2026-08-15); ⏳ cuenta en Resend.
 
@@ -217,6 +217,20 @@ Cuando el usuario tenga: ID de producto + HOTTOK + API key Resend → configurar
 - Badge PREMIUM visible en la app.
 - ⚠️ **Gotcha PWA**: tras crear la suscripción, la app seguía mostrando FREE por cache del service worker → **recarga forzada (Ctrl+Shift+R)** muestra el estado real. No es bug de datos.
 
+### Pruebas controladas cancelación + reembolso (✅ HECHO 2026-08-15)
+
+- `SUBSCRIPTION_CANCELLATION` (payload v2.0.0 con `data.subscriber.code` = TEST-SUB-20260815) → `{"ok":true}`; status pasa a `cancel_at_period_end` (acceso hasta fin de periodo).
+- `PURCHASE_REFUNDED` (con `data.subscription.subscriber_code`) → `{"ok":true}`; `handleRefund` revoca de inmediato: status → `cancelled`, `current_period_end` = hoy.
+- Costo: $0 (pruebas simuladas vía POST directo al webhook, sin compra real ni tarjeta).
+- ⚠️ No se necesita bajar el precio del producto: la Oferta Principal de Hotmart no se puede modificar y las pruebas no consumen dinero.
+
+### PWA pulida para instalación móvil (✅ HECHO 2026-08-15, commit `adee238`)
+
+- `manifest.webmanifest`: nombre "English Basic — Aprende inglés desde cero", `short_name` "English Basic", `lang: es`, `background_color #0f172a`, `theme_color #2563eb`, descripción.
+- `index.html`: metadatos iOS (`apple-mobile-web-app-capable/status-bar-style/title`), `theme-color`, `apple-touch-icon`.
+- Instalación: Android (Chrome → banner "Instalar app") e iPhone (Safari → Compartir → "Agregar a pantalla de inicio"); se abre en pantalla completa "tipo APK".
+- Para ver el nombre nuevo tras actualizar: desinstalar y reinstalar la PWA (el manifest viejo queda cacheado).
+
 ### Cuentas pendientes del usuario
 - **Hotmart** (productor): `https://app.hotmart.com` — requiere datos fiscales para cobrar.
 - **Resend**: `https://resend.com` — gratis, 100 emails/día, 3K/mes.
@@ -262,6 +276,8 @@ git log --oneline -10
 5. ⏳ Webhook en panel Hotmart apuntando a `https://qeopcwsuwntmjmodiwpt.supabase.co/functions/v1/hotmart-webhook` con eventos `PURCHASE_APPROVED`, `SUBSCRIPTION_CANCELLATION`, `PURCHASE_REFUNDED` (verificar si el usuario ya lo configuró; versión 2.0.0 ✅ vista en creación).
 6. ✅ Pricing: checkout URL conectada en `environment.ts`/`environment.prod.ts` (botón → `pay.hotmart.com/R107176903R?email=<logueado>`).
 7. ✅ Prueba controlada `PURCHASE_APPROVED` end-to-end: suscripción `active` + email con PDF + badge PREMIUM.
-8. ⏳ Probar `SUBSCRIPTION_CANCELLATION` (acceso hasta fin de periodo) y `PURCHASE_REFUNDED` (revocación) con pruebas controladas.
-9. ⏳ Decidir si borrar la suscripción de prueba `TEST-SUB-20260815` (da Premium gratis mientras exista).
-10. ⏳ Commitear los cambios pendientes (`.gitignore` + environments + PROGRESO.md).
+8. ✅ Pruebas controladas `SUBSCRIPTION_CANCELLATION` + `PURCHASE_REFUNDED` (status → `cancel_at_period_end` / `cancelled`).
+9. ✅ PWA pulida (manifest + iOS metadata, commit `adee238`); instalable en Android e iPhone con nombre "English Basic".
+10. ⏳ Decidir si borrar la suscripción de prueba `TEST-SUB-20260815` (da Premium gratis mientras exista; hoy está `cancelled` tras el reembolso de prueba, así que ya no otorga Premium).
+11. ⏳ Probar instalación PWA real en teléfono (desinstalar/reinstalar si ya estaba instalada).
+12. ⏳ Verificar botón "Comenzar Premium" desplegado apunta al checkout real (redeploy `1293c80`).
