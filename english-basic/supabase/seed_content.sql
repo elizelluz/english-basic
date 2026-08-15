@@ -1068,7 +1068,7 @@ begin
     (v_p, 'seven', true, 1);
 
   insert into public.questions (quiz_id, question, type, "order")
-  values (v_q2, ''''Eleven'' significa ''doce''.', 'true_false', 4)
+  values (v_q2, '''Eleven'' significa ''doce''.', 'true_false', 4)
   returning id into v_p;
   insert into public.answers (question_id, answer, is_correct, "order") values
     (v_p, 'Falso', true, 1),
@@ -1094,7 +1094,7 @@ begin
     (v_p, 'were', false, 4);
 
   insert into public.questions (quiz_id, question, type, "order")
-  values (v_q3, ''''We are friends'' significa ''nosotros somos amigos''.', 'true_false', 3)
+  values (v_q3, '''We are friends'' significa ''nosotros somos amigos''.', 'true_false', 3)
   returning id into v_p;
   insert into public.answers (question_id, answer, is_correct, "order") values
     (v_p, 'Verdadero', true, 1),
@@ -1152,7 +1152,7 @@ begin
     (v_p, 'Bienvenido', false, 4);
 
   insert into public.questions (quiz_id, question, type, "order")
-  values (v_q5, ''''Thank you'' significa ''gracias''.', 'true_false', 3)
+  values (v_q5, '''Thank you'' significa ''gracias''.', 'true_false', 3)
   returning id into v_p;
   insert into public.answers (question_id, answer, is_correct, "order") values
     (v_p, 'Verdadero', true, 1),
@@ -1184,7 +1184,7 @@ begin
     (v_p, 'Dos hermanos me llaman', false, 4);
 
   insert into public.questions (quiz_id, question, type, "order")
-  values (v_q6, ''''This is my father'' significa ''este es mi padre''.', 'true_false', 3)
+  values (v_q6, '''This is my father'' significa ''este es mi padre''.', 'true_false', 3)
   returning id into v_p;
   insert into public.answers (question_id, answer, is_correct, "order") values
     (v_p, 'Verdadero', true, 1),
@@ -1248,7 +1248,7 @@ begin
     (v_p, 'Se usa am', false, 4);
 
   insert into public.questions (quiz_id, question, type, "order")
-  values (v_q8, ''''I sleep at night'' significa ''duermo de noche''.', 'true_false', 3)
+  values (v_q8, '''I sleep at night'' significa ''duermo de noche''.', 'true_false', 3)
   returning id into v_p;
   insert into public.answers (question_id, answer, is_correct, "order") values
     (v_p, 'Verdadero', true, 1),
@@ -1312,7 +1312,7 @@ begin
     (v_p, 'no', false, 4);
 
   insert into public.questions (quiz_id, question, type, "order")
-  values (v_q10, ''''Do you like tea?'' es una pregunta.', 'true_false', 3)
+  values (v_q10, '''Do you like tea?'' es una pregunta.', 'true_false', 3)
   returning id into v_p;
   insert into public.answers (question_id, answer, is_correct, "order") values
     (v_p, 'Verdadero', true, 1),
@@ -1344,7 +1344,7 @@ begin
     (v_p, 'Para preguntar por lugares', false, 4);
 
   insert into public.questions (quiz_id, question, type, "order")
-  values (v_q11, ''''When'' sirve para preguntar por el tiempo o el momento.', 'true_false', 3)
+  values (v_q11, '''When'' sirve para preguntar por el tiempo o el momento.', 'true_false', 3)
   returning id into v_p;
   insert into public.answers (question_id, answer, is_correct, "order") values
     (v_p, 'Verdadero', true, 1),
@@ -1376,7 +1376,7 @@ begin
     (v_p, 'Viejo', false, 4);
 
   insert into public.questions (quiz_id, question, type, "order")
-  values (v_q12, ''''I''d like'' significa ''me gustaría''.', 'true_false', 3)
+  values (v_q12, '''I''d like'' significa ''me gustaría''.', 'true_false', 3)
   returning id into v_p;
   insert into public.answers (question_id, answer, is_correct, "order") values
     (v_p, 'Verdadero', true, 1),
@@ -1408,7 +1408,7 @@ begin
     (v_p, 'Rápido', false, 4);
 
   insert into public.questions (quiz_id, question, type, "order")
-  values (v_q13, ''''Can I have some water?'' es una forma de pedir agua.', 'true_false', 3)
+  values (v_q13, '''Can I have some water?'' es una forma de pedir agua.', 'true_false', 3)
   returning id into v_p;
   insert into public.answers (question_id, answer, is_correct, "order") values
     (v_p, 'Verdadero', true, 1),
@@ -1440,7 +1440,7 @@ begin
     (v_p, 'Dé la vuelta', false, 4);
 
   insert into public.questions (quiz_id, question, type, "order")
-  values (v_q14, ''''The hotel is near the station'' significa que el hotel está cerca.', 'true_false', 3)
+  values (v_q14, '''The hotel is near the station'' significa que el hotel está cerca.', 'true_false', 3)
   returning id into v_p;
   insert into public.answers (question_id, answer, is_correct, "order") values
     (v_p, 'Verdadero', true, 1),
@@ -1472,7 +1472,7 @@ begin
     (v_p, 'Cuándo sale el avión', false, 4);
 
   insert into public.questions (quiz_id, question, type, "order")
-  values (v_q15, ''''I need a ticket'' significa ''necesito un boleto''.', 'true_false', 3)
+  values (v_q15, '''I need a ticket'' significa ''necesito un boleto''.', 'true_false', 3)
   returning id into v_p;
   insert into public.answers (question_id, answer, is_correct, "order") values
     (v_p, 'Verdadero', true, 1),
@@ -1504,7 +1504,7 @@ begin
     (v_p, 'Trabajo en México', false, 4);
 
   insert into public.questions (quiz_id, question, type, "order")
-  values (v_q16, ''''I live in Madrid'' significa ''vivo en Madrid''.', 'true_false', 3)
+  values (v_q16, '''I live in Madrid'' significa ''vivo en Madrid''.', 'true_false', 3)
   returning id into v_p;
   insert into public.answers (question_id, answer, is_correct, "order") values
     (v_p, 'Verdadero', true, 1),
@@ -1536,7 +1536,7 @@ begin
     (v_p, 'Ceno temprano', false, 4);
 
   insert into public.questions (quiz_id, question, type, "order")
-  values (v_q17, ''''In the evening I study English'' significa que estudias por la noche.', 'true_false', 3)
+  values (v_q17, '''In the evening I study English'' significa que estudias por la noche.', 'true_false', 3)
   returning id into v_p;
   insert into public.answers (question_id, answer, is_correct, "order") values
     (v_p, 'Verdadero', true, 1),
@@ -1568,7 +1568,7 @@ begin
     (v_p, 'Juego fútbol', false, 4);
 
   insert into public.questions (quiz_id, question, type, "order")
-  values (v_q18, ''''I prefer tea to coffee'' significa que prefieres el té.', 'true_false', 3)
+  values (v_q18, '''I prefer tea to coffee'' significa que prefieres el té.', 'true_false', 3)
   returning id into v_p;
   insert into public.answers (question_id, answer, is_correct, "order") values
     (v_p, 'Verdadero', true, 1),
@@ -1609,7 +1609,7 @@ begin
     (v_p, 'Adiós', false, 4);
 
   insert into public.questions (quiz_id, question, type, "order")
-  values (v_q19, ''''What does it mean?'' se usa para preguntar el significado.', 'true_false', 3)
+  values (v_q19, '''What does it mean?'' se usa para preguntar el significado.', 'true_false', 3)
   returning id into v_p;
   insert into public.answers (question_id, answer, is_correct, "order") values
     (v_p, 'Verdadero', true, 1),
@@ -1641,7 +1641,7 @@ begin
     (v_p, 'La rutina', false, 4);
 
   insert into public.questions (quiz_id, question, type, "order")
-  values (v_q20, ''''I can speak basic English'' significa que puedo hablar inglés básico.', 'true_false', 3)
+  values (v_q20, '''I can speak basic English'' significa que puedo hablar inglés básico.', 'true_false', 3)
   returning id into v_p;
   insert into public.answers (question_id, answer, is_correct, "order") values
     (v_p, 'Verdadero', true, 1),
