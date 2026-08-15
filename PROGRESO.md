@@ -16,9 +16,9 @@
 | F4 | Landing + pricing de conversión | ✅ Completada |
 | F5 | Contenido del curso (20 lecciones, quizzes, audios) | ✅ Completada |
 | F6 | Progreso + dashboard del alumno | ✅ Completada |
-| F7 | Hotmart + suscripciones + PDF + email | ⏳ Pendiente (investigación lista) |
+| F7 | Hotmart + suscripciones + PDF + email | 🔨 En curso (compra probada end-to-end; falta cancelación/reembolso + commit) |
 
-**Pendiente de usuario antes de F7**: crear cuenta en Hotmart (productor) y en Resend.
+**Pendiente de usuario**: ✅ cuenta Hotmart + producto de suscripción creado (2026-08-15); ⏳ cuenta en Resend.
 
 ---
 
@@ -169,6 +169,54 @@
 4. Pricing: botón → `pay.hotmart.com/XXX?email=<logueado>`; página `/gracias`.
 5. Pruebas con sandbox de Hotmart.
 
+### Guía: crear el producto de suscripción en Hotmart (✅ HECHO 2026-08-15)
+
+Pasos verificados contra docs oficiales Hotmart 2026:
+
+1. `https://app.hotmart.com` → menú lateral **Productos → Mis productos**.
+2. **`+ Crear producto`** (esquina superior derecha).
+3. **Formato**: *Curso online, Sitio de miembros y Servicios de suscripción*.
+4. **Tipo de pago**: **Suscripción** (pago recurrente mensual).
+5. **Información básica**: nombre ("English Basic — Curso de inglés"), descripción (mín. 200 caracteres), imagen (JPG/PNG/GIF, máx 5 MB), idioma, categoría, mercado.
+6. **Crear plan** (`+ Nuevo plan`): nombre "Premium Mensual", valor **$9.99** USD, periodicidad **mensual**, forma de cobro *hasta que el cliente cancele*, sin período de prueba. ⚠️ El primer plan es la **Oferta Principal** → sus configuraciones NO se pueden modificar después.
+7. **Continuar → aceptar Términos de Uso → Guardar**.
+8. En el Panel del producto: completar **Datos personales** (fiscales, obligatorios para cobrar) → **Finalizar registro**.
+9. El producto pasa a **evaluación** del equipo de Hotmart.
+
+### Pasos siguientes en el panel Hotmart + Resend (⏳ pendiente de usuario)
+
+**Paso 2 — Copiar URL de pago** (Panel del producto):
+1. Pestaña **pago / checkout** ("Página de pago" / "Checkout").
+2. Copiar URL tipo `https://pay.hotmart.com/XXXXXX` — el `XXXXXX` es el **ID de producto** para el botón del pricing.
+
+**Paso 3 — Configurar Webhook** (menú lateral: **Herramientas → Webhook**):
+1. URL destino: `https://qeopcwsuwntmjmodiwpt.supabase.co/functions/v1/hotmart-webhook`.
+2. Eventos: `PURCHASE_APPROVED`, `SUBSCRIPTION_CANCELLATION`, `PURCHASE_REFUNDED`.
+3. Guardar y copiar el **HOTTOK** (`X-HOTMART-HOTTOK`, único por cuenta — valida que el webhook viene de Hotmart).
+
+**Paso 4 — Cuenta Resend** (`https://resend.com`, gratis 100 emails/día, 3K/mes):
+1. Registrar cuenta.
+2. **API Keys → Create API Key** → copiar.
+3. Definir email remitente (`RESEND_FROM`, p. ej. `hola@tudominio.com`; verificar dominio o usar el de prueba).
+
+Cuando el usuario tenga: ID de producto + HOTTOK + API key Resend → configurar secrets en Supabase y desplegar Edge Function.
+
+### Setup Supabase completado (✅ HECHO 2026-08-15)
+
+- `supabase login` + `supabase link --project-ref qeopcwsuwntmjmodiwpt` (proyecto "english-basic").
+- Secrets configurados: `HOTMART_HOTTOK`, `RESEND_API_KEY`, `RESEND_FROM=onboarding@resend.dev` (pruebas; para producción verificar dominio propio en Resend — Gmail NO sirve como remitente).
+- Deploy: `supabase functions deploy hotmart-webhook` ✅.
+- Verificación: POST sin token → 401 `invalid hotmart hottok`; POST con HOTTOK → `{"ok":true}` (token confirmado correcto).
+- ⚠️ Resend no permite enviar desde Gmail (`RESEND_FROM` debe ser dominio verificado o `onboarding@resend.dev`).
+
+### Prueba controlada end-to-end (✅ HECHO 2026-08-15)
+
+- POST `PURCHASE_APPROVED` con payload v2.0.0 realista y HOTTOK correcto → `{"ok":true}`.
+- Suscripción `TEST-SUB-20260815` creada con `status: active`, `current_period_end` 2026-11-05, `user_id` correcto.
+- Email con PDF recibido en Gmail (`onboarding@resend.dev` → "Tu acceso a English Basic Premium" + `english-basic-acceso.pdf`).
+- Badge PREMIUM visible en la app.
+- ⚠️ **Gotcha PWA**: tras crear la suscripción, la app seguía mostrando FREE por cache del service worker → **recarga forzada (Ctrl+Shift+R)** muestra el estado real. No es bug de datos.
+
 ### Cuentas pendientes del usuario
 - **Hotmart** (productor): `https://app.hotmart.com` — requiere datos fiscales para cobrar.
 - **Resend**: `https://resend.com` — gratis, 100 emails/día, 3K/mes.
@@ -207,6 +255,13 @@ git log --oneline -10
 
 ## Siguiente paso (cuando se retome)
 
-1. ✅ Confirmar que el usuario tiene cuenta en **Hotmart** (productor) y **Resend**.
-2. Implementar Fase 7 según el plan de arriba (Edge Function webhook → Resend → PDF → botón checkout → `/gracias`).
-3. Probar con sandbox de Hotmart: compra aprobada → acceso premium + email con PDF; cancelación → acceso hasta fin de periodo; reembolso → revocación.
+1. ✅ Producto de suscripción creado en Hotmart (2026-08-15) — checkout `https://pay.hotmart.com/R107176903R`, producto ID 8320074.
+2. ✅ Cuenta Resend + API Key; `RESEND_FROM=onboarding@resend.dev` (pruebas).
+3. ✅ HOTTOK confirmado contra la Edge Function desplegada.
+4. ✅ Secrets + deploy de `hotmart-webhook` en Supabase.
+5. ⏳ Webhook en panel Hotmart apuntando a `https://qeopcwsuwntmjmodiwpt.supabase.co/functions/v1/hotmart-webhook` con eventos `PURCHASE_APPROVED`, `SUBSCRIPTION_CANCELLATION`, `PURCHASE_REFUNDED` (verificar si el usuario ya lo configuró; versión 2.0.0 ✅ vista en creación).
+6. ✅ Pricing: checkout URL conectada en `environment.ts`/`environment.prod.ts` (botón → `pay.hotmart.com/R107176903R?email=<logueado>`).
+7. ✅ Prueba controlada `PURCHASE_APPROVED` end-to-end: suscripción `active` + email con PDF + badge PREMIUM.
+8. ⏳ Probar `SUBSCRIPTION_CANCELLATION` (acceso hasta fin de periodo) y `PURCHASE_REFUNDED` (revocación) con pruebas controladas.
+9. ⏳ Decidir si borrar la suscripción de prueba `TEST-SUB-20260815` (da Premium gratis mientras exista).
+10. ⏳ Commitear los cambios pendientes (`.gitignore` + environments + PROGRESO.md).

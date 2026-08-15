@@ -5,3 +5,4 @@ dist/
 .atl/
 *.local
 .DS_Store
+.env.local
