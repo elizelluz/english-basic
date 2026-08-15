@@ -1,0 +1,86 @@
+<main class="course-page">
+  <div class="container">
+    <a routerLink="/dashboard" class="course-back">← Volver al dashboard</a>
+
+    @if (loading()) {
+      <p class="course-status">Cargando curso...</p>
+    } @else if (empty()) {
+      <section class="course-empty">
+        <h1>Contenido en preparación</h1>
+        <p>El curso aún no tiene contenido disponible. Vuelve pronto.</p>
+      </section>
+    } @else {
+      <header class="course-head">
+        <p class="section-eyebrow">Tu curso</p>
+        <h1>{{ course()?.title }}</h1>
+        <p class="course-desc">{{ course()?.description }}</p>
+        <p class="course-count">{{ modules().length }} módulos · 15 minutos al día</p>
+      </header>
+
+      <div class="course-modules">
+        @for (module of modules(); track module.id) {
+          <section class="module">
+            <button
+              type="button"
+              class="module-head"
+              [attr.aria-expanded]="expanded().has(module.id)"
+              (click)="toggleModule(module.id)"
+            >
+              <span class="module-title">
+                <span class="module-order" aria-hidden="true">{{ module.order }}</span>
+                {{ module.title }}
+              </span>
+              <span class="module-chevron" aria-hidden="true">
+                {{ expanded().has(module.id) ? '−' : '+' }}
+              </span>
+            </button>
+
+            @if (expanded().has(module.id)) {
+              <div class="module-body">
+                @if (module.description) {
+                  <p class="module-desc">{{ module.description }}</p>
+                }
+                <ul class="lesson-list">
+                  @for (lesson of module.lessons; track lesson.id) {
+                    <li>
+                      <a routerLink="/curso/{{ lesson.id }}" class="lesson-item">
+                        <span class="lesson-number" aria-hidden="true">{{ lesson.order }}</span>
+                        <span class="lesson-info">
+                          <span class="lesson-title">{{ lesson.title }}</span>
+                          @if (lesson.description) {
+                            <span class="lesson-desc">{{ lesson.description }}</span>
+                          }
+                        </span>
+                        @if (lesson.is_free) {
+                          <span class="lesson-badge is-free">GRATIS</span>
+                        } @else if (!premium()) {
+                          <span class="lesson-badge is-locked" aria-hidden="true">
+                            <svg
+                              viewBox="0 0 24 24"
+                              width="14"
+                              height="14"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                          </span>
+                        }
+                      </a>
+                    </li>
+                  } @empty {
+                    <li class="lesson-empty">Sin lecciones disponibles todavía.</li>
+                  }
+                </ul>
+              </div>
+            }
+          </section>
+        }
+      </div>
+    }
+  </div>
+</main>

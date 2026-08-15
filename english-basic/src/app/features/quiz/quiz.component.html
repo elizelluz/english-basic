@@ -1,0 +1,113 @@
+<main class="quiz-page">
+  <div class="container">
+    <a routerLink="/curso/{{ lessonId }}" class="quiz-back">← Volver a la lección</a>
+
+    @if (loading()) {
+      <p class="quiz-status">Cargando quiz...</p>
+    } @else if (locked()) {
+      <section class="quiz-locked">
+        <h1>Esta lección es parte del plan PREMIUM</h1>
+        <p>Desbloquea el curso completo, todos los quizzes y los audios de pronunciación.</p>
+        <div class="quiz-locked-actions">
+          <a routerLink="/pricing" class="btn btn-primary">Ver planes</a>
+          <a routerLink="/curso" class="btn btn-outline">Volver al curso</a>
+        </div>
+      </section>
+    } @else if (finished()) {
+      <section class="quiz-result">
+        <p class="section-eyebrow">Resultado</p>
+        <h1>{{ quiz()?.title }}</h1>
+        <p class="quiz-result-score" [class.is-pass]="finalPercent() >= 70">
+          {{ finalPercent() }}%
+        </p>
+        @if (finalPercent() >= 70) {
+          <p class="quiz-result-message">¡Bien hecho! Dominas esta lección.</p>
+        } @else {
+          <p class="quiz-result-message">Repasa la lección e inténtalo de nuevo.</p>
+        }
+        <div class="quiz-result-actions">
+          <button type="button" class="btn btn-primary btn-lg" (click)="restart()">Repetir</button>
+          <a routerLink="/curso/{{ lessonId }}" class="btn btn-outline btn-lg">
+            Volver a la lección
+          </a>
+        </div>
+      </section>
+    } @else if (currentQuestion(); as question) {
+      <header class="quiz-head">
+        <p class="section-eyebrow">{{ quiz()?.title }}</p>
+        <h1>Pregunta {{ currentNumber() }} de {{ total() }}</h1>
+        <div class="quiz-progress" aria-hidden="true">
+          <span class="quiz-progress-bar" [style.width.%]="progressPercent()"></span>
+        </div>
+      </header>
+
+      <section class="quiz-question">
+        <h2 class="quiz-question-text">{{ question.question }}</h2>
+
+        @if (question.type === 'fill_blank') {
+          <div class="quiz-fill">
+            <input
+              #fillInput
+              type="text"
+              class="quiz-input"
+              [disabled]="answered()"
+              [value]="fillAnswer()"
+              (input)="fillAnswer.set(fillInput.value)"
+              placeholder="Escribe tu respuesta"
+              autocomplete="off"
+            />
+            @if (!answered()) {
+              <button type="button" class="btn btn-primary" (click)="checkFillBlank()">
+                Comprobar
+              </button>
+            }
+          </div>
+        } @else {
+          <div class="quiz-options">
+            @for (answer of question.answers; track answer.id) {
+              <button
+                type="button"
+                class="quiz-option"
+                [class.is-correct]="isAnswerCorrect(answer)"
+                [class.is-wrong]="isAnswerWrong(answer)"
+                [disabled]="answered()"
+                (click)="selectAnswer(answer.id)"
+              >
+                <span class="quiz-option-mark" aria-hidden="true">
+                  @if (isAnswerCorrect(answer)) {
+                    ✓
+                  } @else if (isAnswerWrong(answer)) {
+                    ✕
+                  }
+                </span>
+                {{ answer.answer }}
+              </button>
+            }
+          </div>
+        }
+
+        @if (answered()) {
+          <div class="quiz-feedback" [class.is-correct]="correct()" [class.is-wrong]="!correct()">
+            @if (correct()) {
+              <p>¡Correcto!</p>
+            } @else {
+              <p>
+                Incorrecto. La respuesta correcta es:
+                <strong>
+                  @if (question.type === 'fill_blank') {
+                    {{ fillCorrectAnswer() }}
+                  } @else {
+                    {{ correctAnswerText(question) }}
+                  }
+                </strong>
+              </p>
+            }
+            <button type="button" class="btn btn-primary btn-lg" (click)="next()">
+              {{ currentNumber() === total() ? 'Ver resultado' : 'Siguiente' }}
+            </button>
+          </div>
+        }
+      </section>
+    }
+  </div>
+</main>

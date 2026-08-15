@@ -1,0 +1,153 @@
+<main class="lesson-page">
+  <div class="container">
+    <a routerLink="/curso" class="lesson-back">← Volver al curso</a>
+
+    @if (loading()) {
+      <p class="lesson-status">Cargando lección...</p>
+    } @else if (locked()) {
+      <section class="lesson-locked">
+        <h1>Esta lección es parte del plan PREMIUM</h1>
+        <p>Desbloquea el curso completo, todos los quizzes y los audios de pronunciación.</p>
+        <div class="lesson-locked-actions">
+          <a routerLink="/pricing" class="btn btn-primary">Ver planes</a>
+          <a routerLink="/curso" class="btn btn-outline">Volver al curso</a>
+        </div>
+      </section>
+    } @else if (lesson(); as lesson) {
+      <header class="lesson-head">
+        <nav class="lesson-breadcrumb" aria-label="Ruta">
+          @if (moduleTitle()) {
+            <span class="lesson-module">{{ moduleTitle() }}</span>
+            <span aria-hidden="true">·</span>
+          }
+          <span>Lección {{ lesson.order }}</span>
+        </nav>
+        <h1>{{ lesson.title }}</h1>
+        @if (lesson.description) {
+          <p class="lesson-subtitle">{{ lesson.description }}</p>
+        }
+        @if (lesson.is_free) {
+          <span class="lesson-free-badge">GRATIS</span>
+        }
+      </header>
+
+      @if (lesson.audio_url) {
+        <section class="lesson-section lesson-audio">
+          <h2>Escucha la pronunciación</h2>
+          <audio controls [src]="lesson.audio_url" preload="none"></audio>
+        </section>
+      }
+
+      @if (lesson.content) {
+        @if (lesson.content.vocabulary && lesson.content.vocabulary.length > 0) {
+          <section class="lesson-section">
+            <h2>Vocabulario</h2>
+            <table class="vocab-table">
+              <thead>
+                <tr>
+                  <th scope="col">English</th>
+                  <th scope="col">Español</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of lesson.content.vocabulary; track item.en) {
+                  <tr>
+                    <td class="vocab-en">{{ item.en }}</td>
+                    <td>{{ item.es }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </section>
+        }
+
+        @if (lesson.content.grammar && lesson.content.grammar.length > 0) {
+          <section class="lesson-section">
+            <h2>Gramática</h2>
+            <ul class="grammar-list">
+              @for (point of lesson.content.grammar; track point.en) {
+                <li class="grammar-item">
+                  <p class="grammar-en">{{ point.en }}</p>
+                  <p class="grammar-es">{{ point.es }}</p>
+                  @if (point.note) {
+                    <p class="grammar-note">{{ point.note }}</p>
+                  }
+                </li>
+              }
+            </ul>
+          </section>
+        }
+
+        @if (lesson.content.examples && lesson.content.examples.length > 0) {
+          <section class="lesson-section">
+            <h2>Ejemplos</h2>
+            <ul class="examples-list">
+              @for (example of lesson.content.examples; track example.en) {
+                <li class="example-item">
+                  <p class="example-en">{{ example.en }}</p>
+                  <p class="example-es">{{ example.es }}</p>
+                </li>
+              }
+            </ul>
+          </section>
+        }
+
+        @if (lesson.content.practice && lesson.content.practice.length > 0) {
+          <section class="lesson-section">
+            <h2>Práctica</h2>
+            <ul class="practice-list">
+              @for (
+                exercise of lesson.content.practice;
+                track exercise.instruction;
+                let i = $index
+              ) {
+                <li class="practice-item">
+                  <p class="practice-instruction">{{ exercise.instruction }}</p>
+                  @if (revealed().has(i)) {
+                    <p class="practice-answer">
+                      <span class="practice-answer-label">Respuesta:</span>
+                      {{ exercise.answer }}
+                    </p>
+                  } @else {
+                    <button
+                      type="button"
+                      class="btn btn-outline practice-reveal"
+                      (click)="reveal(i)"
+                    >
+                      Mostrar respuesta
+                    </button>
+                  }
+                </li>
+              }
+            </ul>
+          </section>
+        }
+      }
+
+      <footer class="lesson-actions">
+        @if (completed()) {
+          <p class="lesson-done"><span aria-hidden="true">✓</span> Lección completada</p>
+          @if (quizId() !== null) {
+            <a routerLink="/curso/{{ lessonId }}/quiz" class="btn btn-primary btn-lg">
+              Ir al quiz
+            </a>
+          }
+        } @else {
+          <button
+            type="button"
+            class="btn btn-primary btn-lg"
+            [disabled]="marking()"
+            (click)="markComplete()"
+          >
+            {{ marking() ? 'Guardando...' : 'Marcar como completada' }}
+          </button>
+          @if (quizId() !== null) {
+            <a routerLink="/curso/{{ lessonId }}/quiz" class="btn btn-outline btn-lg">
+              Ir al quiz
+            </a>
+          }
+        }
+      </footer>
+    }
+  </div>
+</main>

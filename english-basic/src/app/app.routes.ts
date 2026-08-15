@@ -37,5 +37,23 @@ export const routes: Routes = [
       import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
     canActivate: [authGuard],
   },
+  {
+    path: 'curso',
+    loadComponent: () =>
+      import('./features/course/course.component').then((m) => m.CourseComponent),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'curso/:lessonId',
+    loadComponent: () =>
+      import('./features/lesson/lesson.component').then((m) => m.LessonComponent),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'curso/:lessonId/quiz',
+    loadComponent: () =>
+      import('./features/quiz/quiz.component').then((m) => m.QuizComponent),
+    canActivate: [authGuard],
+  },
   { path: '**', redirectTo: '' },
 ];
