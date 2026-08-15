@@ -2,8 +2,24 @@
 -- English Basic — Schema Fase 2 (Supabase / PostgreSQL)
 -- Aplicar en: Supabase Dashboard → SQL Editor → New query → Run
 -- Diseño aprobado en PLAN.md (secciones 4 y 5).
--- Orden: tablas → índices → funciones → trigger → RLS → seed
+-- Orden: limpieza → tablas → índices → funciones → trigger → RLS → seed
 -- ============================================================================
+
+-- Limpieza previa (re-ejecución segura durante desarrollo).
+drop table if exists public.events cascade;
+drop table if exists public.lesson_progress cascade;
+drop table if exists public.answers cascade;
+drop table if exists public.questions cascade;
+drop table if exists public.quizzes cascade;
+drop table if exists public.lessons cascade;
+drop table if exists public.modules cascade;
+drop table if exists public.courses cascade;
+drop table if exists public.subscriptions cascade;
+drop table if exists public.plans cascade;
+drop table if exists public.profiles cascade;
+drop function if exists public.is_premium();
+drop function if exists public.is_admin();
+drop function if exists public.handle_new_user();
 
 -- ----------------------------------------------------------------------------
 -- 1. Tablas
