@@ -1,7 +1,12 @@
 {
-  "name": "english-basic",
-  "short_name": "english-basic",
+  "name": "English Basic — Aprende inglés desde cero",
+  "short_name": "English Basic",
+  "description": "Curso de inglés básico: 4 módulos, 20 lecciones, quizzes y audios.",
+  "lang": "es",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "background_color": "#0f172a",
+  "theme_color": "#2563eb",
   "scope": "./",
   "start_url": "./",
   "icons": [
