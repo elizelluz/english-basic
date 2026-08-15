@@ -1,0 +1,1571 @@
+Claro. Te dejo un **único prompt maestro**, listo para copiar y pegar en Claude Code, Cursor, Gemini CLI u otro agente de desarrollo. Está planteado para que el agente **primero analice y diseñe, y no empiece a programar prematuramente**.
+
+# PROYECTO: MVP DE PLATAFORMA DE SUSCRIPCIÓN PARA INFOPRODUCTO DE INGLÉS BÁSICO
+
+## 1. OBJETIVO GENERAL
+
+Quiero desarrollar un MVP de una plataforma web de suscripción para vender un infoproducto de inglés básico dirigido principalmente a personas que quieren aprender inglés desde cero o mejorar sus conocimientos básicos.
+
+El objetivo inicial NO es construir una academia online compleja, sino validar un modelo de negocio.
+
+El MVP debe permitir:
+
+1. Captar visitantes mediante una landing page.
+2. Permitir registro e inicio de sesión.
+3. Ofrecer contenido gratuito limitado.
+4. Ofrecer una suscripción Premium.
+5. Procesar pagos.
+6. Activar automáticamente la suscripción después del pago.
+7. Permitir al usuario acceder al contenido Premium.
+8. Registrar su progreso.
+9. Permitir realizar ejercicios y quizzes.
+10. Mostrar un dashboard de aprendizaje.
+11. Tener un panel administrativo básico.
+12. Poder medir conversión, progreso y retención.
+
+La prioridad es mantener los costos de infraestructura en $0 durante la fase inicial.
+
+IMPORTANTE:
+
+El objetivo es utilizar herramientas y servicios gratuitos o Free Tier siempre que sea técnicamente viable.
+
+No quiero comenzar pagando servidores, VPS, hosting, bases de datos, servicios de correo, almacenamiento ni plataformas educativas.
+
+Los costos variables de los procesadores de pago son aceptables porque solamente ocurren cuando se realiza una venta.
+
+---
+
+# 2. PRINCIPIO FUNDAMENTAL DEL PROYECTO
+
+No quiero construir inicialmente una plataforma educativa gigantesca.
+
+Quiero construir una máquina sencilla que permita validar:
+
+* si las personas se registran;
+* si consumen el contenido;
+* si están dispuestas a pagar;
+* si permanecen suscritas;
+* si completan las lecciones.
+
+La primera versión debe ser pequeña, funcional, segura y escalable.
+
+No agregar funcionalidades innecesarias.
+
+---
+
+# 3. STACK TECNOLÓGICO PREFERIDO
+
+El stack inicial recomendado es:
+
+## Frontend
+
+Angular.
+
+Preferentemente utilizar Angular moderno con arquitectura standalone.
+
+## Backend / servicios
+
+Supabase.
+
+Utilizar:
+
+* PostgreSQL
+* Supabase Auth
+* Supabase Storage
+* Row Level Security
+* Edge Functions cuando sea necesario
+
+## Hosting frontend
+
+Cloudflare Pages.
+
+## Control de versiones
+
+GitHub.
+
+## Pagos
+
+PayPal como primera opción para suscripciones.
+
+También debe contemplarse inicialmente una opción de pago manual mediante transferencia bancaria para la fase beta, si resulta conveniente.
+
+## Email
+
+Utilizar una alternativa gratuita como Resend u otro proveedor Free Tier adecuado.
+
+No implementar un sistema de correo propio.
+
+## Analytics
+
+Google Analytics o una alternativa gratuita adecuada.
+
+## Diseño
+
+Figma Free.
+
+---
+
+# 4. RESTRICCIÓN DE COSTOS
+
+La arquitectura debe intentar mantener:
+
+* Hosting: $0
+* Base de datos: $0
+* Auth: $0
+* Storage: $0 inicialmente
+* Frontend hosting: $0
+* SSL: $0
+* Git: $0
+* Analytics: $0
+* Email: $0 inicialmente
+* Administración inicial: $0
+
+Los pagos pueden tener comisión por transacción.
+
+No considerar el procesador de pagos como infraestructura gratuita: debe tratarse como costo variable de venta.
+
+IMPORTANTE:
+
+Antes de implementar cualquier servicio externo, comprobar sus límites actuales del Free Tier y evitar arquitecturas que dependan de superar dichos límites.
+
+---
+
+# 5. PRODUCTO
+
+Nombre provisional:
+
+"English Basic"
+
+Nombre comercial definitivo todavía no está decidido.
+
+Concepto:
+
+"Aprende inglés básico desde cero con lecciones cortas, ejercicios y práctica diaria."
+
+La propuesta de valor debe orientarse a una transformación concreta.
+
+Ejemplo:
+
+"Aprende las bases del inglés y empieza a comunicarte en situaciones cotidianas en 30 días."
+
+No quiero vender simplemente "videos de inglés".
+
+Quiero vender un sistema de aprendizaje estructurado.
+
+---
+
+# 6. MODELO DE NEGOCIO
+
+Inicialmente utilizar un modelo Freemium.
+
+## Plan FREE
+
+Precio:
+
+$0
+
+Debe permitir acceso limitado para que el usuario pueda comprobar la calidad del producto antes de pagar.
+
+Ejemplo:
+
+* 3 lecciones
+* vocabulario básico
+* un quiz
+* progreso básico
+
+## Plan PREMIUM
+
+Precio inicial sugerido:
+
+$9.99 / mes
+
+Debe incluir:
+
+* curso completo
+* todas las lecciones
+* ejercicios
+* quizzes
+* audios
+* seguimiento del progreso
+* contenido adicional
+* acceso mientras la suscripción esté activa
+
+## Plan anual
+
+No es obligatorio para la primera versión.
+
+Puede incorporarse posteriormente.
+
+Precio sugerido inicial:
+
+$79/año
+
+Debe analizarse antes de implementarlo.
+
+---
+
+# 7. IMPORTANTE SOBRE PAGOS
+
+No utilizar Stripe como dependencia principal para el MVP si la disponibilidad para Ecuador no es adecuada.
+
+Investigar y validar primero la disponibilidad actual de PayPal para Ecuador y sus capacidades de suscripción.
+
+El sistema debe contemplar:
+
+* creación de suscripción;
+* aprobación;
+* activación;
+* renovación;
+* cancelación;
+* pago fallido;
+* expiración;
+* reembolso si corresponde;
+* webhook;
+* sincronización del estado con la base de datos.
+
+Nunca confiar únicamente en el frontend para determinar si un usuario es Premium.
+
+La fuente de verdad debe estar en backend/database y sincronizada con el proveedor de pagos.
+
+---
+
+# 8. FLUJO DE PAGO
+
+El flujo esperado es:
+
+Usuario
+→ Pricing
+→ seleccionar Premium
+→ PayPal
+→ completar pago
+→ PayPal confirma
+→ webhook
+→ backend/Edge Function
+→ actualizar subscription
+→ usuario obtiene acceso Premium.
+
+Debe diseñarse correctamente el sistema de webhooks.
+
+No asumir que el usuario debe ser activado simplemente porque regresó a la página después del pago.
+
+La confirmación real debe proceder del proveedor de pagos.
+
+---
+
+# 9. SUSCRIPCIONES
+
+NO utilizar únicamente algo como:
+
+user.is_premium = true
+
+Diseñar un modelo de suscripción real.
+
+Estados sugeridos:
+
+* trialing
+* active
+* past_due
+* cancelled
+* expired
+
+La base de datos debe poder distinguir:
+
+* usuario;
+* plan;
+* proveedor;
+* ID externo de suscripción;
+* estado;
+* fecha de inicio;
+* fecha de renovación;
+* fecha de cancelación;
+* fecha de expiración;
+* timestamps.
+
+---
+
+# 10. ARQUITECTURA GENERAL
+
+La arquitectura inicial recomendada es:
+
+Internet
+↓
+Cloudflare Pages
+↓
+Angular
+↓
+Supabase Auth
+↓
+Supabase PostgreSQL
+↓
+Supabase Storage
+↓
+Supabase Edge Functions
+↓
+PayPal
+
+El frontend nunca debe contener secretos.
+
+Nunca colocar:
+
+* PayPal secret
+* service role key
+* claves privadas
+* credenciales administrativas
+
+en Angular.
+
+Las operaciones sensibles deben ejecutarse en backend/Edge Functions.
+
+---
+
+# 11. ESTRUCTURA FUNCIONAL
+
+La plataforma debe dividirse en:
+
+## Área pública
+
+* Landing
+* Pricing
+* Login
+* Registro
+* Recuperación de contraseña
+* Información del curso
+
+## Área privada
+
+* Dashboard
+* Curso
+* Módulos
+* Lecciones
+* Quiz
+* Progreso
+* Perfil
+* Suscripción
+
+## Área administrativa
+
+* Dashboard
+* Usuarios
+* Cursos
+* Módulos
+* Lecciones
+* Quizzes
+* Preguntas
+* Suscripciones
+* Pagos
+
+---
+
+# 12. PANTALLAS PÚBLICAS
+
+## Landing
+
+Debe contener:
+
+* propuesta de valor;
+* problema;
+* solución;
+* beneficios;
+* cómo funciona;
+* contenido del programa;
+* testimonios cuando existan;
+* pricing;
+* FAQ;
+* CTA;
+* footer.
+
+Debe tener una UX limpia, moderna y orientada a conversión.
+
+No sobrecargarla.
+
+---
+
+# 13. PRICING
+
+Crear una página de precios.
+
+Debe mostrar claramente:
+
+FREE
+
+$0
+
+* 3 lecciones
+* vocabulario
+* quiz inicial
+
+Botón:
+
+"Comenzar gratis"
+
+PREMIUM
+
+$9.99/mes
+
+* curso completo
+* ejercicios
+* audio
+* quizzes
+* progreso
+* contenido Premium
+
+Botón:
+
+"Comenzar Premium"
+
+El usuario debe entender inmediatamente la diferencia entre FREE y PREMIUM.
+
+---
+
+# 14. AUTENTICACIÓN
+
+Implementar:
+
+* registro;
+* login;
+* logout;
+* recuperación de contraseña;
+* persistencia de sesión;
+* protección de rutas.
+
+Inicialmente:
+
+Email + password.
+
+Posteriormente podría agregarse:
+
+Google OAuth.
+
+---
+
+# 15. DASHBOARD DEL ALUMNO
+
+Después de iniciar sesión:
+
+Mostrar:
+
+* saludo;
+* porcentaje de progreso;
+* última lección;
+* botón continuar;
+* lecciones disponibles;
+* racha;
+* progreso semanal;
+* estado de suscripción.
+
+Ejemplo conceptual:
+
+Hola
+
+Tu progreso:
+
+72%
+
+Semana 3 de 4
+
+[Continuar aprendiendo]
+
+Racha:
+
+5 días
+
+Próximas lecciones:
+
+Lesson 13
+Lesson 14
+Lesson 15
+
+---
+
+# 16. ESTRUCTURA DEL CURSO
+
+Curso inicial:
+
+"English Basic — Inglés Básico en 30 días"
+
+Dividir en 4 módulos/semanas.
+
+## Semana 1 — Supervivencia
+
+Temas:
+
+* Greetings
+* Numbers
+* Colors
+* Days
+* Personal information
+* Verb to be
+
+## Semana 2 — Vida cotidiana
+
+Temas:
+
+* Family
+* Food
+* Home
+* Work
+* Daily routines
+* Present simple
+
+## Semana 3 — Conversación
+
+Temas:
+
+* Asking questions
+* Shopping
+* Restaurants
+* Directions
+* Time
+* Transportation
+
+## Semana 4 — Comunicación
+
+Temas:
+
+* Introducing yourself
+* Talking about your day
+* Likes/dislikes
+* Making requests
+* Basic conversations
+
+El contenido puede modificarse posteriormente.
+
+---
+
+# 17. ESTRUCTURA DE CADA LECCIÓN
+
+Cada lección debe tener una estructura consistente.
+
+Ejemplo:
+
+Lesson 05 — Introducing Yourself
+
+## Objetivo
+
+Presentarte en inglés.
+
+## Vocabulary
+
+* name
+* age
+* country
+* city
+* job
+* student
+
+## Grammar
+
+* I am...
+* My name is...
+* I live in...
+* I work as...
+
+## Listening
+
+Audio corto.
+
+## Practice
+
+Ejercicios.
+
+## Speaking
+
+Frases que el alumno debe repetir.
+
+## Quiz
+
+5 preguntas.
+
+## Resultado
+
+Mostrar:
+
+* puntuación;
+* respuestas correctas;
+* lección completada;
+* siguiente lección.
+
+---
+
+# 18. PROGRESO
+
+Registrar:
+
+* lecciones iniciadas;
+* lecciones completadas;
+* porcentaje;
+* score;
+* fecha de finalización;
+* última actividad;
+* racha si se implementa.
+
+No implementar una gamificación compleja en el MVP.
+
+---
+
+# 19. BASE DE DATOS
+
+Diseñar inicialmente las siguientes tablas.
+
+## users
+
+Campos conceptuales:
+
+* id
+* email
+* name
+* created_at
+
+Considerar que Supabase Auth administra la identidad y que el perfil de usuario debe relacionarse correctamente con auth.users.
+
+---
+
+## plans
+
+Campos:
+
+* id
+* name
+* price
+* currency
+* interval
+* active
+* created_at
+
+---
+
+## subscriptions
+
+Campos:
+
+* id
+* user_id
+* plan_id
+* provider
+* provider_subscription_id
+* status
+* started_at
+* current_period_start
+* current_period_end
+* cancelled_at
+* created_at
+* updated_at
+
+---
+
+## courses
+
+Campos:
+
+* id
+* title
+* description
+* level
+* active
+* created_at
+* updated_at
+
+---
+
+## modules
+
+Campos:
+
+* id
+* course_id
+* title
+* description
+* order
+* created_at
+* updated_at
+
+---
+
+## lessons
+
+Campos:
+
+* id
+* module_id
+* title
+* description
+* content
+* video_url
+* audio_url
+* order
+* is_free
+* active
+* created_at
+* updated_at
+
+---
+
+## quizzes
+
+Campos:
+
+* id
+* lesson_id
+* title
+* created_at
+* updated_at
+
+---
+
+## questions
+
+Campos:
+
+* id
+* quiz_id
+* question
+* type
+* order
+* created_at
+
+---
+
+## answers
+
+Campos:
+
+* id
+* question_id
+* answer
+* is_correct
+* order
+
+---
+
+## lesson_progress
+
+Campos:
+
+* id
+* user_id
+* lesson_id
+* completed
+* score
+* started_at
+* completed_at
+* updated_at
+
+---
+
+# 20. CONSIDERACIONES DE BASE DE DATOS
+
+Diseñar:
+
+* claves primarias;
+* foreign keys;
+* índices;
+* unique constraints;
+* timestamps;
+* integridad referencial.
+
+Evitar duplicación innecesaria.
+
+Utilizar PostgreSQL correctamente.
+
+---
+
+# 21. ROW LEVEL SECURITY
+
+Implementar RLS correctamente.
+
+Un usuario debe poder:
+
+* consultar su propio perfil;
+* consultar su propio progreso;
+* actualizar únicamente su información permitida;
+* consultar contenido público;
+* consultar contenido Premium solamente si tiene una suscripción activa.
+
+No debe poder:
+
+* consultar progreso de otros usuarios;
+* modificar suscripciones;
+* modificar precios;
+* modificar contenidos;
+* modificar roles;
+* modificar pagos.
+
+---
+
+# 22. ROLES
+
+Inicialmente manejar al menos:
+
+* user
+* admin
+
+El administrador debe poder gestionar el contenido.
+
+No permitir que un usuario pueda convertirse a admin simplemente modificando datos desde el frontend.
+
+---
+
+# 23. CONTENIDO PREMIUM
+
+Las lecciones deben poder marcarse como:
+
+is_free = true
+
+o
+
+is_free = false
+
+Para una lección Premium:
+
+* comprobar autenticación;
+* comprobar suscripción activa;
+* permitir acceso únicamente si corresponde.
+
+La validación debe hacerse en una capa confiable.
+
+No depender únicamente de Angular.
+
+---
+
+# 24. STORAGE
+
+Utilizar Supabase Storage inicialmente para:
+
+* audios;
+* imágenes;
+* recursos pequeños.
+
+No almacenar una gran biblioteca de vídeo directamente en Supabase si esto supera rápidamente el Free Tier.
+
+Para la primera versión se puede utilizar:
+
+YouTube no listado
+
+para vídeos, si resulta adecuado.
+
+La arquitectura debe permitir cambiar posteriormente el proveedor de vídeo.
+
+---
+
+# 25. PANEL ADMINISTRATIVO
+
+Crear inicialmente:
+
+/admin
+
+## Dashboard
+
+Mostrar:
+
+* total usuarios;
+* usuarios Premium;
+* usuarios Free;
+* suscripciones activas;
+* cancelaciones;
+* ingresos registrados;
+* usuarios activos.
+
+## Usuarios
+
+Mostrar:
+
+* nombre;
+* email;
+* plan;
+* estado;
+* fecha de registro;
+* último acceso;
+* progreso.
+
+## Cursos
+
+CRUD:
+
+* cursos;
+* módulos;
+* lecciones.
+
+## Quizzes
+
+CRUD:
+
+* quizzes;
+* preguntas;
+* respuestas.
+
+## Suscripciones
+
+Mostrar:
+
+* usuario;
+* plan;
+* proveedor;
+* estado;
+* inicio;
+* renovación;
+* cancelación.
+
+---
+
+# 26. ADMINISTRACIÓN INICIAL
+
+No es obligatorio crear un CMS administrativo extremadamente sofisticado.
+
+Durante la primera fase se puede utilizar Supabase Dashboard para determinadas operaciones internas.
+
+Después construir el panel Angular.
+
+La prioridad es lanzar.
+
+---
+
+# 27. EMAIL
+
+Inicialmente implementar únicamente correos esenciales:
+
+* confirmación de registro;
+* recuperación de contraseña;
+* confirmación de suscripción;
+* aviso de cancelación;
+* eventualmente aviso de renovación.
+
+Utilizar un proveedor gratuito.
+
+No desarrollar un servidor de correo propio.
+
+---
+
+# 28. ANALYTICS
+
+Registrar como mínimo:
+
+* visitas;
+* registro;
+* login;
+* inicio de lección;
+* finalización de lección;
+* inicio de quiz;
+* finalización de quiz;
+* clic en Premium;
+* inicio de checkout;
+* compra;
+* cancelación.
+
+Esto permitirá construir posteriormente un embudo:
+
+Visitante
+→ Registro
+→ Usuario Free
+→ Inicio de curso
+→ Checkout
+→ Premium
+→ Retención
+
+---
+
+# 29. MÉTRICAS DEL NEGOCIO
+
+Medir:
+
+## Conversion rate
+
+usuarios registrados / visitantes
+
+## Free → Premium
+
+usuarios Premium / usuarios Free
+
+## Retención
+
+usuarios activos después de 30 días / usuarios iniciales
+
+## Churn
+
+cancelaciones / suscriptores
+
+## ARPU
+
+ingresos / usuarios de pago
+
+No implementar analítica empresarial compleja en el MVP.
+
+---
+
+# 30. CONTENIDO
+
+El MVP inicial debe tener aproximadamente:
+
+20–30 lecciones.
+
+Cada una puede contener:
+
+* explicación;
+* vocabulario;
+* gramática;
+* ejemplos;
+* audio;
+* ejercicios;
+* quiz.
+
+No es necesario producir cientos de lecciones antes del lanzamiento.
+
+La prioridad es calidad sobre cantidad.
+
+---
+
+# 31. FUNCIONALIDADES QUE NO DEBEN IMPLEMENTARSE EN EL MVP
+
+NO implementar inicialmente:
+
+* aplicación móvil;
+* chat en tiempo real;
+* videollamadas;
+* profesores;
+* marketplace;
+* comunidad propia;
+* certificados oficiales;
+* gamificación avanzada;
+* sistema complejo de puntos;
+* afiliados;
+* reconocimiento de voz;
+* IA conversacional;
+* tutor IA;
+* generación automática de ejercicios;
+* sistema avanzado de recomendaciones.
+
+Estas funcionalidades pueden formar parte de una segunda fase.
+
+---
+
+# 32. FASE 2
+
+Una vez validado el producto, considerar:
+
+## AI English Coach
+
+Permitir conversaciones con IA.
+
+Ejemplo:
+
+Usuario:
+
+"Talk to me in English."
+
+IA:
+
+"Sure! Tell me about your day."
+
+El sistema puede posteriormente:
+
+* corregir gramática;
+* corregir vocabulario;
+* evaluar respuestas;
+* generar ejercicios;
+* recomendar lecciones.
+
+Pero NO incluir IA en el MVP si introduce costos innecesarios.
+
+---
+
+# 33. SEGURIDAD
+
+Aplicar:
+
+* RLS;
+* validación de inputs;
+* protección de rutas;
+* gestión segura de sesiones;
+* variables de entorno;
+* separación de claves públicas y privadas;
+* HTTPS;
+* protección de endpoints;
+* validación de webhooks;
+* idempotencia en pagos;
+* logs de errores;
+* control de roles.
+
+Nunca confiar en datos enviados desde Angular para autorizar Premium.
+
+---
+
+# 34. VARIABLES DE ENTORNO
+
+Separar claramente:
+
+Frontend:
+
+* Supabase URL
+* Supabase anon/public key
+
+Backend/Edge Functions:
+
+* Supabase service role key cuando sea estrictamente necesario
+* PayPal credentials
+* email provider credentials
+* webhook secrets
+
+Nunca subir secretos a GitHub.
+
+Crear:
+
+.env.example
+
+sin valores reales.
+
+---
+
+# 35. GIT
+
+Crear un repositorio.
+
+Usar ramas o una estrategia simple y clara.
+
+Ejemplo:
+
+main
+develop
+feature/*
+
+No es necesario complicar Git para el MVP.
+
+Cada funcionalidad debe poder rastrearse mediante commits claros.
+
+---
+
+# 36. ESTRUCTURA ANGULAR
+
+Proponer una arquitectura limpia.
+
+Conceptualmente:
+
+src/app/
+
+core/
+shared/
+features/
+auth/
+landing/
+pricing/
+dashboard/
+course/
+lesson/
+quiz/
+progress/
+profile/
+subscription/
+admin/
+
+Utilizar:
+
+* standalone components;
+* lazy loading;
+* route guards;
+* services;
+* interfaces/types;
+* interceptors cuando sean necesarios.
+
+Evitar una arquitectura excesivamente compleja.
+
+---
+
+# 37. UX/UI
+
+El diseño debe ser:
+
+* moderno;
+* limpio;
+* educativo;
+* profesional;
+* responsive;
+* mobile-first;
+* accesible;
+* rápido.
+
+Priorizar:
+
+* jerarquía visual;
+* claridad;
+* CTA visibles;
+* lectura cómoda;
+* navegación sencilla;
+* progreso visible.
+
+No diseñar una interfaz sobrecargada.
+
+---
+
+# 38. MOBILE
+
+Aunque inicialmente sea una web, debe funcionar correctamente en:
+
+* desktop;
+* tablet;
+* móvil.
+
+El alumno probablemente utilizará el producto desde un teléfono.
+
+Por eso las lecciones deben diseñarse pensando primero en pantallas pequeñas.
+
+---
+
+# 39. VIDEO Y AUDIO
+
+La experiencia de aprendizaje debe ser ligera.
+
+Evitar cargar recursos innecesarios.
+
+Implementar:
+
+* lazy loading;
+* compresión;
+* formatos adecuados;
+* reproducción simple;
+* controles claros.
+
+---
+
+# 40. PERFORMANCE
+
+Optimizar:
+
+* Angular lazy loading;
+* imágenes;
+* audios;
+* vídeos;
+* consultas a Supabase;
+* índices PostgreSQL;
+* caché cuando sea apropiado.
+
+No realizar consultas innecesarias.
+
+---
+
+# 41. ROADMAP DE IMPLEMENTACIÓN
+
+Dividir el proyecto en fases.
+
+## FASE 0 — DEFINICIÓN
+
+Antes de programar:
+
+* analizar requisitos;
+* detectar ambigüedades;
+* confirmar arquitectura;
+* definir modelo de datos;
+* definir flujos;
+* definir roles;
+* definir seguridad;
+* definir integración de pagos.
+
+No comenzar a programar inmediatamente.
+
+---
+
+## FASE 1 — INFRAESTRUCTURA
+
+Configurar:
+
+* GitHub;
+* Angular;
+* Supabase;
+* Cloudflare Pages;
+* variables de entorno;
+* ambientes.
+
+---
+
+## FASE 2 — BASE DE DATOS
+
+Crear:
+
+* tablas;
+* relaciones;
+* índices;
+* RLS;
+* policies;
+* roles.
+
+Probar primero las políticas.
+
+---
+
+## FASE 3 — AUTENTICACIÓN
+
+Implementar:
+
+* registro;
+* login;
+* logout;
+* recuperación;
+* guards;
+* sesión.
+
+---
+
+## FASE 4 — LANDING
+
+Implementar:
+
+* landing;
+* pricing;
+* CTA;
+* FAQ;
+* responsive.
+
+---
+
+## FASE 5 — CURSO
+
+Implementar:
+
+* cursos;
+* módulos;
+* lecciones;
+* contenido;
+* audio;
+* ejercicios;
+* quizzes.
+
+---
+
+## FASE 6 — PROGRESO
+
+Implementar:
+
+* inicio de lección;
+* finalización;
+* score;
+* porcentaje;
+* dashboard.
+
+---
+
+## FASE 7 — SUSCRIPCIONES
+
+Implementar:
+
+* plans;
+* checkout;
+* PayPal;
+* webhook;
+* subscription;
+* estados;
+* autorización Premium.
+
+---
+
+## FASE 8 — ADMIN
+
+Implementar:
+
+* usuarios;
+* cursos;
+* módulos;
+* lecciones;
+* quizzes;
+* suscripciones.
+
+---
+
+## FASE 9 — ANALYTICS
+
+Implementar eventos.
+
+---
+
+## FASE 10 — TESTING
+
+Probar:
+
+* registro;
+* login;
+* logout;
+* recuperación;
+* acceso Free;
+* acceso Premium;
+* pago;
+* webhook;
+* cancelación;
+* expiración;
+* RLS;
+* roles;
+* responsive;
+* errores.
+
+---
+
+## FASE 11 — DEPLOY
+
+Publicar:
+
+Angular
+→ GitHub
+→ Cloudflare Pages
+
+Configurar:
+
+* dominio;
+* HTTPS;
+* variables;
+* producción.
+
+---
+
+# 42. BETA
+
+No lanzar inicialmente para miles de usuarios.
+
+Primera beta:
+
+10–20 alumnos reales.
+
+Objetivos:
+
+* detectar bugs;
+* validar UX;
+* comprobar pagos;
+* comprobar contenido;
+* medir progreso;
+* medir conversión;
+* comprobar retención.
+
+---
+
+# 43. CRITERIOS DE ÉXITO
+
+El MVP será exitoso si consigue demostrar:
+
+1. Las personas llegan a la landing.
+2. Algunas se registran.
+3. Algunas consumen el contenido gratuito.
+4. Algunas pagan.
+5. Los pagos activan correctamente Premium.
+6. Los usuarios completan lecciones.
+7. Algunos permanecen activos después de varias semanas.
+
+No medir el éxito por cantidad de funcionalidades.
+
+---
+
+# 44. PRINCIPIO DE DESARROLLO
+
+Aplicar:
+
+KISS.
+
+YAGNI.
+
+DRY cuando sea apropiado.
+
+Priorizar:
+
+* simplicidad;
+* seguridad;
+* mantenibilidad;
+* escalabilidad razonable;
+* velocidad de desarrollo.
+
+No sobrearquitecturar.
+
+---
+
+# 45. REGLAS PARA EL AGENTE
+
+Antes de implementar cualquier cosa:
+
+1. Analiza el proyecto.
+2. Identifica los requisitos.
+3. Detecta conflictos o decisiones pendientes.
+4. Propón la arquitectura.
+5. Propón el esquema de base de datos.
+6. Explica el flujo de autenticación.
+7. Explica el flujo de suscripción.
+8. Explica el flujo de webhook.
+9. Define la estrategia de seguridad.
+10. Define las fases de implementación.
+
+No generar código masivo antes de tener clara la arquitectura.
+
+Cuando comiences a programar:
+
+* implementar por fases;
+* probar cada fase;
+* evitar romper funcionalidades existentes;
+* mantener código limpio;
+* documentar decisiones importantes;
+* no introducir dependencias innecesarias.
+
+---
+
+# 46. RESULTADO ESPERADO
+
+Al finalizar el MVP quiero tener una aplicación funcionando con esta experiencia:
+
+Visitante
+→ Landing
+→ conoce el curso
+→ ve pricing
+→ crea cuenta
+→ obtiene contenido Free
+→ prueba varias lecciones
+→ decide Premium
+→ paga
+→ PayPal confirma
+→ webhook actualiza la suscripción
+→ usuario obtiene Premium
+→ continúa el curso
+→ completa lecciones
+→ obtiene progreso
+→ vuelve regularmente.
+
+El administrador debe poder:
+
+→ gestionar usuarios
+→ gestionar contenido
+→ gestionar lecciones
+→ gestionar quizzes
+→ consultar suscripciones
+→ consultar métricas básicas.
+
+---
+
+# 47. RESTRICCIÓN FINAL
+
+NO quiero comenzar pagando servicios.
+
+Prioridad:
+
+1. Free Tier
+2. Open Source
+3. servicios gratuitos
+4. costos variables solamente cuando exista una venta
+5. servicios de pago únicamente cuando el crecimiento los justifique.
+
+La arquitectura debe permitir migrar posteriormente a servicios de pago sin tener que reconstruir toda la aplicación.
+
+---
+
+# 48. PRIMERA TAREA DEL AGENTE
+
+NO empieces todavía a crear toda la aplicación.
+
+Primero:
+
+1. Analiza este documento.
+2. Propón la arquitectura técnica definitiva.
+3. Propón el ERD/base de datos completo.
+4. Propón las políticas RLS.
+5. Propón la estructura de carpetas Angular.
+6. Propón el flujo completo de autenticación.
+7. Propón el flujo completo de suscripción PayPal.
+8. Propón el sistema de webhooks.
+9. Propón la estrategia de contenido.
+10. Propón el roadmap de desarrollo.
+11. Identifica riesgos técnicos.
+12. Identifica qué partes pueden mantenerse completamente gratuitas.
+13. Identifica qué partes tendrán costos variables.
+14. Indica cualquier requisito que necesites confirmar antes de comenzar.
+
+Después de presentar ese diseño, espera aprobación antes de implementar la siguiente fase.
+
+El objetivo es construir un MVP real, funcional, seguro y comercialmente validable, no solamente una demo visual.
