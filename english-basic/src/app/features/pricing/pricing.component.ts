@@ -1,6 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { CheckoutService } from '../../core/services/checkout.service';
 
 interface PlanFeature {
   label: string;
@@ -17,7 +18,10 @@ interface PlanFeature {
 })
 export class PricingComponent {
   private readonly authService = inject(AuthService);
+  private readonly checkoutService = inject(CheckoutService);
+
   readonly isAuthenticated = computed(() => this.authService.isAuthenticated());
+  readonly checkoutUrl = computed(() => this.checkoutService.getCheckoutUrl());
 
   readonly features: PlanFeature[] = [
     { label: '3 lecciones de muestra', free: true, premium: true },

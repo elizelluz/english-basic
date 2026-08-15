@@ -1,0 +1,6 @@
+# Supabase configuration file.
+# Documentation: https://supabase.com/docs/reference/cli/config
+project_id = "qeopcwsuwntmjmodiwpt"
+
+[functions.hotmart-webhook]
+verify_jwt = false

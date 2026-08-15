@@ -53,7 +53,7 @@ create table public.subscriptions (
   provider                 text not null default 'hotmart',
   provider_subscription_id text,
   status                   text not null default 'active'
-                             check (status in ('trialing', 'active', 'past_due', 'cancelled', 'expired')),
+                             check (status in ('trialing', 'active', 'past_due', 'cancel_at_period_end', 'cancelled', 'expired')),
   started_at               timestamptz,
   current_period_start     timestamptz,
   current_period_end       timestamptz,
@@ -178,7 +178,7 @@ as $$
     select 1
     from public.subscriptions s
     where s.user_id = auth.uid()
-      and s.status = 'active'
+      and s.status in ('active', 'cancel_at_period_end')
       and (s.current_period_end is null or s.current_period_end > now())
   );
 $$;

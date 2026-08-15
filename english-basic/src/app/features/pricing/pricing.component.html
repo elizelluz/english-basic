@@ -57,8 +57,9 @@
             </li>
           }
         </ul>
-        <!-- TODO F7: link a checkout Hotmart -->
-        <a routerLink="/registro" class="btn btn-primary btn-block">Comenzar Premium</a>
+        <a [href]="checkoutUrl()" target="_blank" rel="noopener" class="btn btn-primary btn-block">
+          Comenzar Premium
+        </a>
       </article>
     </section>
 

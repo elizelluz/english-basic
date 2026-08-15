@@ -1,0 +1,16 @@
+<main class="thanks-page">
+  <div class="container thanks-card">
+    <p class="section-eyebrow">Compra confirmada</p>
+    <h1>¡Gracias por tu compra!</h1>
+    <p class="thanks-message">
+      Te enviamos tus credenciales de acceso por email.
+      Si no llega en unos minutos, revisa tu carpeta de spam.
+    </p>
+    <div class="thanks-actions">
+      @if (isAuthenticated()) {
+        <a routerLink="/curso" class="btn btn-primary">Ir al curso</a>
+      }
+      <a routerLink="/" class="btn btn-outline">Volver al inicio</a>
+    </div>
+  </div>
+</main>
